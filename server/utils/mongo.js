@@ -4,6 +4,7 @@ const {MONGO_OPTIONS} = require('../constants')
 
 class MongoDB {
   constructor() {
+    console.log(MONGO_URI)
     this.mongoose = mongoose
     this.isConnected = false
     this.MONGO_URI = MONGO_URI

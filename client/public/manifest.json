@@ -1,10 +1,10 @@
 {
-  "name": "Web Application",
-  "short_name": "Web App",
-  "description": "An awesome web application!",
+  "name": "Blip",
+  "short_name": "Blip",
+  "description": "Your voice, one Blip at a time.",
   "icons": [
     {
-      "src": "favicon.ico",
+      "src": "favicon2.ico",
       "sizes": "64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
     },

@@ -34,6 +34,17 @@ body {
   text-align: center;
 }
 
+.slide-down {
+  max-height:0px;
+  transition-property: max-height;
+  transition-duration: .5s;
+  overflow: hidden
+}
+
+.expanded{
+  max-height: 500px;
+}
+
 /*
   Extra Small Devices, Phones 
   @media only screen and (min-width: 480px) {}

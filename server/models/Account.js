@@ -29,8 +29,6 @@ const instance = new mongoose.Schema(
   },
 )
 
-// NOTE! use a singular model name, mongoose automatically creates a collection like so:
-// model: 'Account' === collection: 'accounts'
 const modelName = 'Account'
 
 module.exports = mongoose.model(modelName, instance)

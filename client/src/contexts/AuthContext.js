@@ -13,7 +13,7 @@ export function useAuth() {
 export function AuthProvider({ children }) {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [account, setAccount] = useState(null)
-  const [token, setToken] = useState(localStorage.getItem('token') || null)
+  const [checkedToken, setCheckedToken] = useState(false)
 
   const register = (formData = {}) =>
     new Promise((resolve, reject) => {
@@ -21,12 +21,11 @@ export function AuthProvider({ children }) {
         .post('/auth/register', formData)
         .then(({
           data: {
-            data: accountData,
-            token: accessToken,
+            data: accountData
           },
         }) => {
           setAccount(accountData)
-          setToken(accessToken)
+          setCheckedToken(true)
           setIsLoggedIn(true)
           resolve(true)
         })
@@ -42,12 +41,11 @@ export function AuthProvider({ children }) {
         .post('/auth/login', formData)
         .then(({
           data: {
-            data: accountData,
-            token: accessToken,
+            data: accountData
           },
         }) => {
           setAccount(accountData)
-          setToken(accessToken)
+          setCheckedToken(true)
           setIsLoggedIn(true)
           resolve(true)
         })
@@ -57,36 +55,33 @@ export function AuthProvider({ children }) {
         })
     })
 
-  const logout = () => {
+  const logout = async () => {
+    await axios.get('/auth/logout');
     setIsLoggedIn(false)
     setAccount(null)
-    setToken(null)
+    setCheckedToken(true)
   }
 
   const loginWithToken = async () => {
     try {
       const {
         data: {
-          data: accountData,
-          token: accessToken,
+          data: accountData
         },
-      } = await axios.get('/auth/login', {
-        headers: {
-          authorization: `Bearer ${token}`,
-        },
-      })
+      } = await axios.get('/auth/login')
 
       setAccount(accountData)
-      setToken(accessToken)
+      setCheckedToken(true)
       setIsLoggedIn(true)
     } catch (error) {
       console.error(error)
-      if (error?.response?.statusCode === 401) setToken(null)
+      if (error?.response?.statusCode === 401) setCheckedToken(true)
     }
   }
 
   // This side effect keeps local storage updated with recent token value,
   // making sure it can be re-used upon refresh or re-open browser
+  /** 
   useEffect(() => {
     if (token) {
       localStorage.setItem('token', token)
@@ -94,20 +89,20 @@ export function AuthProvider({ children }) {
       localStorage.removeItem('token')
     }
   }, [token])
+  */
 
   // This side effect runs only if we have a token, but no account or logged-in boolean.
   // This "if" statement is "true" only when refreshed, or re-opened the browser,
   // if true, it will then ask the backend for the account information (and will get them if the token hasn't expired)
   useEffect(() => {
-    if (!isLoggedIn && !account && token) loginWithToken()
-  }, [isLoggedIn, account, token]) // eslint-disable-line react-hooks/exhaustive-deps
+    if (!isLoggedIn && !account && !checkedToken) loginWithToken()
+  }, [isLoggedIn, account, checkedToken]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <AuthContext.Provider
       value={{
         isLoggedIn,
         account,
-        token,
         register,
         login,
         logout,

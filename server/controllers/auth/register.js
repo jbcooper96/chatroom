@@ -46,10 +46,15 @@ async function register(request, response, next) {
     // Generate access token
     const token = signToken({uid: newAccount._id, role: newAccount.role})
 
+    response.cookie('token', token, {
+      httpOnly: true, 
+      sameSite: 'strict', 
+      maxAge: 43200000 
+    });
+    
     response.status(201).json({
       message: 'Succesfully registered',
-      data: newAccount,
-      token,
+      data: newAccount
     })
   } catch (error) {
     console.error(error)
