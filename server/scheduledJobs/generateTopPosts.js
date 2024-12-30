@@ -16,7 +16,6 @@ async function mapGptToPost(gptPosts) {
     let usernames = []
     const usernamesToIds = new Map();
 
-    console.log(gptPosts)
     for (let gptPost of gptPosts) {
         posts.push(new Post({
             text: gptPost.text,
